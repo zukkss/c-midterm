@@ -1,0 +1,151 @@
+
+    using System;
+    using System.Collections.Generic;
+
+    namespace YourFirstName.YourLastName_MidTerm
+    {
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Audi audi = new Audi("Audi A4", 200, 1500);
+                Mercedes mercedes = new Mercedes("Mercedes-Benz E-Class", 180, 1600, true);
+
+                List<Car> cars = new List<Car> { audi, mercedes };
+
+                Car slowestCar = FindSlowestCar(cars.ToArray());
+                Console.WriteLine($"The slowest car is: {slowestCar.Name} with a speed of {slowestCar.Speed} km/h.");
+            }
+
+            static Car FindSlowestCar(Car[] cars)
+            {
+                Car slowest = cars[0];
+                foreach (var car in cars)
+                {
+                    if (car < slowest)
+                    {
+                        slowest = car;
+                    }
+                }
+                return slowest;
+            }
+        }
+
+
+
+
+
+
+
+
+        interface IComfortMode
+        {
+            void EnableComfortMode(bool enable);
+        }
+
+
+
+
+
+        abstract class Car : IComfortMode
+        {
+            public string Name { get; set; }
+            public int Speed { get; set; }
+            public int Weight { get; set; }
+
+            public Car(string name, int speed, int weight)
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new CarValidationException("Name cannot be empty or null.");
+                if (speed < 0)
+                    throw new CarValidationException("Speed cannot be negative.");
+                if (weight < 0)
+                    throw new CarValidationException("Weight cannot be negative.");
+
+                Name = name;
+                Speed = speed;
+                Weight = weight;
+
+            }
+
+        public abstract void EnableComfortMode(bool enable);
+
+        public static bool operator >(Car car1, Car car2)
+        {
+            return car1.Speed > car2.Speed;
+        }
+
+        public static bool operator <(Car car1, Car car2)
+        {
+            return car1.Speed < car2.Speed;
+        }
+
+        public static bool operator ==(Car car1, Car car2)
+        {
+            return car1.Speed == car2.Speed;
+        }
+
+        public static bool operator !=(Car car1, Car car2)
+        {
+            return car1.Speed != car2.Speed;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    class Audi : Car
+        {
+            public Audi(string name, int speed, int weight) : base(name, speed, weight)
+            {
+
+            }
+
+            public override void EnableComfortMode(bool enable)
+            {
+                if (enable)
+                    Console.WriteLine("Comfort mode enabled for Audi.");
+                else
+                    Console.WriteLine("Comfort mode disabled for Audi.");
+            }
+        }
+
+
+
+
+        class Mercedes : Car
+        {
+            public bool HasAssistant { get; set; }
+
+            public Mercedes(string name, int speed, int weight, bool hasAssistant) : base(name, speed, weight)
+            {
+                HasAssistant = hasAssistant;
+            }
+
+            public override void EnableComfortMode(bool enable)
+            {
+                if (enable)
+                    Console.WriteLine("Comfort mode enabled for Mercedes.");
+                else
+                    Console.WriteLine("Comfort mode disabled for Mercedes.");
+            }
+        }
+
+
+
+
+
+        class CarValidationException : ArgumentException
+        {
+            public CarValidationException() : base() { }
+            public CarValidationException(string message) : base(message) { }
+            public CarValidationException(string message, Exception innerException) : base(message, innerException) { }
+        }
+    }
